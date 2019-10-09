@@ -171,11 +171,8 @@ function addNewProduct() {
 			}
 		])
 		.then(function (answer) {
-			if (isNaN(answer.price) || isNaN(answer.stock_quantity)) {
+			if (isNaN(answer.price) && isNaN(answer.stock_quantity)) {
 				console.log("Invalid Input");
-				if (isNaN(answer.price)) console.log("Invalid Price");
-				if (isNaN(answer.stock_quantity)) console.log("Invalid Quantity");
-				displayMenu();
 			} else {
 				var newrow = {
 					product_name: answer.product_name,
