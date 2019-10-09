@@ -1,7 +1,8 @@
+// Required Dependencies
 var mysql = require("mysql");
 var inquirer = require("inquirer");
 var Table = require("cli-table");
-
+// create the connection information for the sql database
 var connection = mysql.createConnection({
 	host: "localhost",
 	port: 3306,
@@ -15,7 +16,7 @@ connection.connect(function (err) {
 	if (err) throw err;
 	displayMenu();
 });
-
+// main function
 function displayMenu() {
 	inquirer
 		.prompt([
@@ -33,6 +34,7 @@ function displayMenu() {
 			}
 		])
 		.then(function (choice) {
+			// Trigger the appropriate action based on the user input
 			switch (choice.Menu) {
 				case "a: View Products for Sale":
 					viewProductsForSale();
@@ -52,7 +54,7 @@ function displayMenu() {
 			}
 		});
 }
-
+// viewProductsForSale will retrieve the current inventory from the database and output it to the console
 function viewProductsForSale() {
 
 	connection.query('SELECT * FROM Products', function (err, res) {
@@ -70,6 +72,7 @@ function viewProductsForSale() {
 		displayMenu();
 	});
 }
+// viewLowInventory will display a list of products with the available quantity below 5
 
 function viewLowInventory() {
 
@@ -89,6 +92,7 @@ function viewLowInventory() {
 		displayMenu();
 	});
 }
+// addToInventory will guilde a user in adding additional quantify to an existing item
 
 function addToInventory() {
 	connection.query("select * from products ", function (err, res) {
@@ -104,7 +108,7 @@ function addToInventory() {
 			);
 		}
 		console.log(theDisplayTable.toString());
-
+		// Prompt the user to select an item
 		inquirer
 			.prompt([
 				{
@@ -145,8 +149,10 @@ function addToInventory() {
 }
 
 ////////////////////
-function addNewProduct() {
+// addNewProduct will guide the user in adding a new product to the inventory
 
+function addNewProduct() {
+	// Prompt the user to enter information about the new product
 	inquirer
 		.prompt([
 			{

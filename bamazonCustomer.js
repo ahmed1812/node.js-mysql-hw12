@@ -1,3 +1,4 @@
+// Required Dependencies
 var mysql = require("mysql");
 var inquirer = require("inquirer");
 // var table = require('console.table');
@@ -17,27 +18,29 @@ var connection = mysql.createConnection({
     database: "bamazon_db"
 });
 
-// connect to the mysql server and sql database
+// If connection doesn't work, throws error, else...
 connection.connect(function (err) {
     if (err) throw err;
-
-    // "department_name" + "|" + "price" + "|" + "stock_quantity");
+    //Call main function
     makeTable();
 });
-// connection.end();
+// BEGIN Display Inventory
 var makeTable = function () {
     connection.query('SELECT * FROM products', function (err, res) {
         if (err) throw err;
+        // Cli-Table display code 
         var theDisplayTable = new Table({
             head: ['Item ID', 'Product Name', 'Category', 'Price', 'Quantity'],
             colWidths: [10, 25, 25, 10, 14]
         });
+        // Set/Style table headings and Loop through entire inventory
         for (var i = 0; i < res.length; i++) {
 
             theDisplayTable.push(
                 [res[i].item_id, res[i].product_name, res[i].department_name, res[i].price, res[i].stock_quantity]
             );
         }
+        // END Display Inventory
         console.log(theDisplayTable.toString());
 
 
@@ -46,13 +49,15 @@ var makeTable = function () {
 
 }
 function custamerchoice(res) {
+    // Prompt Customers Input
     inquirer.prompt([
         {
             name: "choice",
             type: "input",
             message: "What is the product you would like to buy? [quit with Q]"
+            // Ordering function
         }]).then(function (answer) {
-            // get the information of the chosen item
+
             var correct = false;
             if (answer.choice.toUpperCase() == "Q") {
                 process.exit();
@@ -74,6 +79,7 @@ function custamerchoice(res) {
                             }
                         }
                     }).then(function (answer) {
+                        // Varify item quantity desired is in inventory
                         if ((res[id].stock_quantity - answer.quant) > 0) {
                             connection.query("UPDATE products SET stock_quantity='"
                                 + (res[id].stock_quantity - answer.quant)
