@@ -91,9 +91,9 @@ function viewLowInventory() {
 }
 
 function addToInventory() {
-  connection.query("select * from products ", function (err, res) {
+	connection.query("select * from products ", function (err, res) {
 		if (err) throw err;
-	
+
 		var theDisplayTable = new Table({
 			head: ['Item ID', 'Product Name', 'Quantity'],
 			colWidths: [10, 25, 15]
@@ -104,91 +104,91 @@ function addToInventory() {
 			);
 		}
 		console.log(theDisplayTable.toString());
-		
-	inquirer
-		.prompt([
-			{
-				type: "input",
-				name: "product",
-				message: "Select the product to add to inventory??"
-			},
-			{
-				type: "input",
-				name: "quantity",
-				message: "What is the quantity of inventory??"
-			}
-		])
-		.then(function (answer) {
-			var product = answer.product;
-			var quantity = parseInt(answer.quantity);
-			buildNewItem(product, quantity);
-		});
-});
 
-function buildNewItem(product, quantity) {
-  
-	connection.query(`UPDATE products SET ? WHERE ?`,
-	[
-		{
-			stock_quantity: quantity
-		},{
-			product_name: product
-		}
-	],
-		function (err, res) {
-		if (err) throw err;
-		
-    displayMenu();
+		inquirer
+			.prompt([
+				{
+					type: "input",
+					name: "product",
+					message: "Select the product to add to inventory??"
+				},
+				{
+					type: "input",
+					name: "quantity",
+					message: "What is the quantity of inventory??"
+				}
+			])
+			.then(function (answer) {
+				var product = answer.product;
+				var quantity = parseInt(answer.quantity);
+				buildNewItem(product, quantity);
+			});
+	});
 
-	})
-}
+	function buildNewItem(product, quantity) {
+
+		connection.query(`UPDATE products SET ? WHERE ?`,
+			[
+				{
+					stock_quantity: quantity
+				}, {
+					product_name: product
+				}
+			],
+			function (err, res) {
+				if (err) throw err;
+
+				displayMenu();
+
+			})
+	}
 }
 
 ////////////////////
 function addNewProduct() {
 
-  inquirer
-  .prompt([
-    {
-      type: "input",
-      name: "product_name",
-      message: "Enter the name of product to add??"
-    },
-    {
-      type: "input",
-      name: "department_name",
-      message: "Enter the department of product to add??"
-    },
-    {
-      type: "input",
-      name: "price",
-      message: "Enter the price of product to add??"
-    },
-    {
-      type: "input",
-      name: "stock_quantity",
-      message: "Enter the quantity of product to add??"
-    }
-  ])
-  .then(function(answer) {
-    if (isNaN(answer.price) || isNaN(answer.stock_quantity)) {
-      console.log("Invalid Input");
-      if (isNaN(answer.price)) console.log("Invalid Price");
-      if (isNaN(answer.stock_quantity)) console.log("Invalid Quantity");
-      displayMenu();
-    } else {
-      var newrow = {
-        product_name: answer.product_name,
-        department_name: answer.department_name,
-        price: answer.price,
-        stock_quantity: answer.stock_quantity
-      };
-      var sql = "insert into products set ?";
-      connection.query(sql, newrow, function(err, res) {
-        if (err) throw err;
-        displayMenu();
-      });
-    }
-  });
+	inquirer
+		.prompt([
+			{
+				type: "input",
+				name: "product_name",
+				message: "Enter the name of product to add??"
+			},
+			{
+				type: "input",
+				name: "department_name",
+				message: "Enter the department of product to add??"
+			},
+			{
+				type: "input",
+				name: "price",
+				message: "Enter the price of product to add??"
+			},
+			{
+				type: "input",
+				name: "stock_quantity",
+				message: "Enter the quantity of product to add??"
+			}
+		])
+		.then(function (answer) {
+			if (isNaN(answer.price) || isNaN(answer.stock_quantity)) {
+				console.log("Invalid Input");
+				if (isNaN(answer.price)) console.log("Invalid Price");
+				if (isNaN(answer.stock_quantity)) console.log("Invalid Quantity");
+				displayMenu();
+			} else {
+				var newrow = {
+					product_name: answer.product_name,
+					department_name: answer.department_name,
+					price: answer.price,
+					stock_quantity: answer.stock_quantity
+				};
+				var sql = "insert into products set ?";
+				connection.query(sql, newrow, function (err, res) {
+					if (err) throw err;
+					displayMenu();
+				});
+			}
+		});
 }
 
